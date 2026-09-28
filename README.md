@@ -15,7 +15,7 @@
 
 你需要一部已获取 Root 权限、能正常运行 **LSPosed 或兼容框架**的 Android 手机，并安装微信 **8.0.78**。这个模块不是普通的独立 App；安装 APK 后，还要在框架中启用它。
 
-1. 下载并安装 [v0.4.0 APK](dist/WeChatDramaAdSkip-v0.4.0-wechat8.0.78.apk)。手机上打开 APK 安装即可。
+1. 从 [GitHub Releases 直接下载 v0.4.0 APK](https://github.com/winde03/wechat_skipAds/releases/download/v0.4.0/WeChatDramaAdSkip-v0.4.0-wechat8.0.78.apk)，在手机上打开 APK 安装。也可以在仓库的 [Releases 页面](https://github.com/winde03/wechat_skipAds/releases)选择版本，在 **Assets** 中下载 `.apk` 文件；`Source code` 压缩包不是安装包。
 2. 打开 LSPosed 或兼容框架，启用 **「视频号短剧去推广」**模块。
 3. 在模块的**作用域**中勾选 **微信（`com.tencent.mm`）**。
 4. 在手机设置中**强制停止微信**，然后重新打开微信。
@@ -48,6 +48,8 @@ export ANDROID_HOME=/你的/Android/Sdk/目录
 ```
 
 构建结果在 `app/build/outputs/apk/debug/app-debug.apk`。Xposed API 只用于编译，不会打包进模块 APK。
+
+仓库的 GitHub Actions 在提交到 `main` 或手动运行时也会从源码构建 APK，供开发测试。**给普通用户安装的 APK 请从 Releases 下载**：发布流程在构建通过后上传仓库 `dist/` 中已签名的安装包，保持与已安装版本相同的签名。GitHub Actions 临时构建的测试 APK 可能使用不同签名，通常不能直接覆盖安装 Release 版本。
 
 ## 适用范围
 

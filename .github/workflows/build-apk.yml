@@ -1,0 +1,63 @@
+name: Build and publish APK
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v4
+      - name: Install Android SDK 36
+        run: sdkmanager --install 'platforms;android-36' 'build-tools;36.0.0'
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Build APK from source
+        run: ./gradlew :app:assembleDebug
+      - name: Upload CI build
+        uses: actions/upload-artifact@v7
+        with:
+          name: WeChatDramaAdSkip-ci-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+      - name: Check signed release APK
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          apk="dist/WeChatDramaAdSkip-${GITHUB_REF_NAME}-wechat8.0.78.apk"
+          test -f "$apk"
+          test -f "release-notes/${GITHUB_REF_NAME}.md"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify "$apk"
+          package_info=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" | head -n 1)
+          [[ "$package_info" == *"name='dev.winde.wechatdramaskip'"* ]]
+          [[ "$package_info" == *"versionName='${GITHUB_REF_NAME#v}'"* ]]
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Publish signed APK to GitHub Releases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          apk="dist/WeChatDramaAdSkip-${GITHUB_REF_NAME}-wechat8.0.78.apk"
+          (cd dist && sha256sum "${apk#dist/}") > "$apk.sha256"
+          gh release create "$GITHUB_REF_NAME" "$apk" "$apk.sha256" \
+            --verify-tag \
+            --title "$GITHUB_REF_NAME（微信 8.0.78）" \
+            --notes-file "release-notes/${GITHUB_REF_NAME}.md"
