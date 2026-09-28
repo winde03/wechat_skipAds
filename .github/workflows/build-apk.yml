@@ -37,10 +37,14 @@ jobs:
           apk="dist/WeChatDramaAdSkip-${GITHUB_REF_NAME}-wechat8.0.78.apk"
           test -f "$apk"
           test -f "release-notes/${GITHUB_REF_NAME}.md"
-          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify "$apk"
+          signer=$("$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs "$apk")
+          [[ "$signer" == *'Signer #1 certificate SHA-256 digest: 78918c5e013ff356d5584a7b38a897d7d5700620acb1f35d4945fbe6ae34c2e6'* ]]
           package_info=$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" | head -n 1)
-          [[ "$package_info" == *"name='dev.winde.wechatdramaskip'"* ]]
+          [[ "$package_info" == *"name='io.github.winde03.wechatdramaskip'"* ]]
           [[ "$package_info" == *"versionName='${GITHUB_REF_NAME#v}'"* ]]
+          expected_code=$(sed -nE 's/^[[:space:]]*versionCode ([0-9]+).*/\1/p' app/build.gradle)
+          [[ "$package_info" == *"versionCode='${expected_code}'"* ]]
+          [[ "$(unzip -p "$apk" assets/xposed_init)" == 'io.github.winde03.wechatdramaskip.WeChatHook' ]]
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')

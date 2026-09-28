@@ -2,21 +2,42 @@ plugins {
     id 'com.android.application'
 }
 
+def releaseKeystorePath = System.getenv('WECHAT_ADSKIP_KEYSTORE')
+def releaseStorePassword = System.getenv('WECHAT_ADSKIP_STORE_PASSWORD')
+def releaseKeyAlias = System.getenv('WECHAT_ADSKIP_KEY_ALIAS')
+def releaseKeyPassword = System.getenv('WECHAT_ADSKIP_KEY_PASSWORD')
+def hasReleaseSigning = releaseKeystorePath && releaseStorePassword
+        && releaseKeyAlias && releaseKeyPassword
+
 android {
-    namespace 'dev.winde.wechatdramaskip'
+    namespace 'io.github.winde03.wechatdramaskip'
     compileSdk 36
 
     defaultConfig {
-        applicationId 'dev.winde.wechatdramaskip'
+        applicationId 'io.github.winde03.wechatdramaskip'
         minSdk 26
         targetSdk 35
-        versionCode 4
-        versionName '0.4.0'
+        versionCode 5
+        versionName '0.5.0'
+    }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            release {
+                storeFile file(releaseKeystorePath)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 

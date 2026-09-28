@@ -1,4 +1,4 @@
-package dev.winde.wechatdramaskip;
+package io.github.winde03.wechatdramaskip;
 
 import android.app.Activity;
 import android.app.Instrumentation;

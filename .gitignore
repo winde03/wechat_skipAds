@@ -6,3 +6,6 @@ local.properties
 .idea/
 .DS_Store
 *.log
+*.jks
+*.keystore
+keystore.properties

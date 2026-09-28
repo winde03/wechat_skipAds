@@ -6,25 +6,26 @@
 
 ## 它能做什么
 
+- **v0.5.0（当前版）：**沿用 v0.4.0 的短剧推广处理功能，改用 `io.github.winde03.wechatdramaskip` 包名和专用发布签名，方便在 Xposed 模块仓库收录和后续更新。
 - **v0.4.0：**尝试阻止推广视频进入短剧列表，让剧集直接衔接。如果推广视频仍然出现，保留提前上滑的功能。
 - **v0.3.0：**推广视频出现后，无需等待倒计时结束，可以直接上滑看下一集。
 
-目前，**提前上滑已在真机上验证成功**；v0.4.0 新增的“推广视频完全不出现”功能已编译并安装，**还没有完成真机效果验证**。因此，安装 v0.4.0 后仍可能看到推广视频。
+目前，旧包名版本的**提前上滑已在真机上验证成功**；“推广视频完全不出现”的效果**还没有完成真机验证**。v0.5.0 只调整包名与签名，保留原来的 Hook 代码；仍可能看到推广视频。
 
 ## 安装与使用
 
 你需要一部已获取 Root 权限、能正常运行 **LSPosed 或兼容框架**的 Android 手机，并安装微信 **8.0.78**。这个模块不是普通的独立 App；安装 APK 后，还要在框架中启用它。
 
-1. 从 [GitHub Releases 直接下载 v0.4.0 APK](https://github.com/winde03/wechat_skipAds/releases/download/v0.4.0/WeChatDramaAdSkip-v0.4.0-wechat8.0.78.apk)，在手机上打开 APK 安装。也可以在仓库的 [Releases 页面](https://github.com/winde03/wechat_skipAds/releases)选择版本，在 **Assets** 中下载 `.apk` 文件；`Source code` 压缩包不是安装包。
+1. 从 [GitHub Releases 直接下载 v0.5.0 APK](https://github.com/winde03/wechat_skipAds/releases/download/v0.5.0/WeChatDramaAdSkip-v0.5.0-wechat8.0.78.apk)，在手机上打开 APK 安装。也可以在仓库的 [Releases 页面](https://github.com/winde03/wechat_skipAds/releases)选择版本，在 **Assets** 中下载 `.apk` 文件；`Source code` 压缩包不是安装包。
 2. 打开 LSPosed 或兼容框架，启用 **「视频号短剧去推广」**模块。
 3. 在模块的**作用域**中勾选 **微信（`com.tencent.mm`）**。
-4. 在手机设置中**强制停止微信**，然后重新打开微信。
+4. 如果以前安装过 v0.4.0，请先在框架中**停用旧包名 `dev.winde.wechatdramaskip` 的模块**，避免两个模块同时 Hook 微信。然后在手机设置中**强制停止微信**，重新打开微信。不需要卸载微信。
 5. 进入视频号短剧继续观看。模块会尝试过滤推广视频；如果仍出现，可在倒计时结束前尝试上滑。
 
 使用 Android 调试工具安装时，也可以在仓库目录执行：
 
 ```sh
-adb install -r dist/WeChatDramaAdSkip-v0.4.0-wechat8.0.78.apk
+adb install -r dist/WeChatDramaAdSkip-v0.5.0-wechat8.0.78.apk
 ```
 
 Android 16 上的一种可用组合是 KernelSU + [NeoZygisk](https://github.com/JingMatrix/NeoZygisk) + [Vector](https://github.com/JingMatrix/Vector)。如果你的 LSPosed 兼容环境已经正常工作，无需重复安装这些组件。
@@ -36,7 +37,7 @@ Android 16 上的一种可用组合是 KernelSU + [NeoZygisk](https://github.com
 3. 进入一次短剧页面后，在 LSPosed/Vector 日志中搜索 `WeChatDramaAdSkip`。如果只有“当前微信版本的类或方法不匹配”，没有“已安装微信 8.0.78 短剧去推广 Hook”，通常需要重新适配。
 4. 如果日志显示 Hook 已安装，但推广视频仍不能提前上滑，请记录微信版本、广告页面截图和相关日志，便于定位问题。
 
-仓库还保留了 [v0.3.0 APK](dist/WeChatDramaAdSkip-v0.3.0-wechat8.0.78.apk)，它只提供已验证的“广告出现后提前上滑”功能。
+仓库还保留了旧包名的 [v0.3.0 APK](dist/WeChatDramaAdSkip-v0.3.0-wechat8.0.78.apk) 和 [v0.4.0 APK](dist/WeChatDramaAdSkip-v0.4.0-wechat8.0.78.apk)。因为 v0.5.0 改了包名，它不会覆盖安装旧模块；确认新版正常工作后可卸载旧模块。
 
 ## 从源码构建
 
@@ -50,6 +51,8 @@ export ANDROID_HOME=/你的/Android/Sdk/目录
 构建结果在 `app/build/outputs/apk/debug/app-debug.apk`。Xposed API 只用于编译，不会打包进模块 APK。
 
 仓库的 GitHub Actions 在提交到 `main` 或手动运行时也会从源码构建 APK，供开发测试。**给普通用户安装的 APK 请从 Releases 下载**：发布流程在构建通过后上传仓库 `dist/` 中已签名的安装包，保持与已安装版本相同的签名。GitHub Actions 临时构建的测试 APK 可能使用不同签名，通常不能直接覆盖安装 Release 版本。
+
+v0.5.0 起使用专用发布签名，签名证书的 SHA-256 为 `78918c5e013ff356d5584a7b38a897d7d5700620acb1f35d4945fbe6ae34c2e6`。之后的正式版本需要继续使用这把密钥，才能覆盖升级。
 
 ## 适用范围
 
