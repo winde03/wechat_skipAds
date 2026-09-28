@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">视频号短剧去推广</string>
+    <string name="module_description">移除微信视频号短剧时间线中的推广内容</string>
+</resources>

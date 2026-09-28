@@ -1,0 +1,31 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'dev.winde.wechatdramaskip'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'dev.winde.wechatdramaskip'
+        minSdk 26
+        targetSdk 35
+        versionCode 4
+        versionName '0.4.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    compileOnly files('libs/xposed-api-82.jar')
+}
