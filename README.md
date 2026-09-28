@@ -16,7 +16,7 @@
 
 你需要一部已获取 Root 权限、能正常运行 **LSPosed 或兼容框架**的 Android 手机，并安装微信 **8.0.78**。这个模块不是普通的独立 App；安装 APK 后，还要在框架中启用它。
 
-1. 从 [GitHub Releases 直接下载 v0.5.0 APK](https://github.com/winde03/wechat_skipAds/releases/download/v0.5.0/WeChatDramaAdSkip-v0.5.0-wechat8.0.78.apk)，在手机上打开 APK 安装。也可以在仓库的 [Releases 页面](https://github.com/winde03/wechat_skipAds/releases)选择版本，在 **Assets** 中下载 `.apk` 文件；`Source code` 压缩包不是安装包。
+1. 从 [GitHub Releases 直接下载 v0.5.0 APK](https://github.com/winde03/wechat_skipAds/releases/download/v0.5.0/WeChatDramaAdSkip-v0.5.0-wechat8.0.78.apk)，在手机上打开 APK 安装。也可以在 [Xposed 模块仓库的发布页](https://github.com/Xposed-Modules-Repo/io.github.winde03.wechatdramaskip/releases/tag/5-0.5.0)下载相同的 APK；`Source code` 压缩包不是安装包。
 2. 打开 LSPosed 或兼容框架，启用 **「视频号短剧去推广」**模块。
 3. 在模块的**作用域**中勾选 **微信（`com.tencent.mm`）**。
 4. 如果以前安装过 v0.4.0，请先在框架中**停用旧包名 `dev.winde.wechatdramaskip` 的模块**，避免两个模块同时 Hook 微信。然后在手机设置中**强制停止微信**，重新打开微信。不需要卸载微信。
